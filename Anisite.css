@@ -1,0 +1,13 @@
+.container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.list {
+    display: none;
+}
+
+.list.active {
+    display: block;
+}

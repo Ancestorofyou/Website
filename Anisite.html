@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listen-Website</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <button onclick="showSection('anime')">Anime anzeigen</button>
+    <button onclick="showSection('manga')">Manga anzeigen</button>
+    <button onclick="showSection('serien')">Serien anzeigen</button>
+
+    <div id="anime" class="container" style="display: none;">
+        <div class="list active">
+            <h2>Anime</h2>
+            <ul>
+                <li><img src="bild1.jpg" alt="Bild 1"><span>Text 1</span></li>
+            </ul>
+            <input type="text" placeholder="Titel">
+            <input type="text" placeholder="Bild">
+            <input type="text" placeholder="Link">
+            <button onclick="addItemToList('anime')">Element hinzufügen</button>
+        </div>
+    </div>
+
+    <div id="manga" class="container" style="display: none;">
+        <div class="list active">
+            <h2>Manga</h2>
+            <ul>
+                <li><img src="bild1.jpg" alt="Bild 1"><span>Text 1</span></li>
+            </ul>
+            <input type="text" placeholder="Titel">
+            <input type="text" placeholder="Bild">
+            <input type="text" placeholder="Link">
+            <button onclick="addItemToList('manga')">Element hinzufügen</button>
+        </div>
+    </div>
+
+    <div id="serien" class="container" style="display: none;">
+        <div class="list active">
+            <h2>Serien</h2>
+            <ul>
+                <li><img src="bild1.jpg" alt="Bild 1"><span>Text 1</span></li>
+            </ul>
+            <input type="text" placeholder="Titel">
+            <input type="text" placeholder="Bild">
+            <input type="text" placeholder="Link">
+            <button onclick="addItemToList('serien')">Element hinzufügen</button>
+        </div>
+    </div>
+
+    <div id="serien" class="container" style="display: none;">
+        <div class="list active">
+            <h2>Filme</h2>
+            <ul>
+                <li><img src="bild1.jpg" alt="Bild 1"><span>Text 1</span></li>
+            </ul>
+            <input type="text" placeholder="Titel">
+            <input type="text" placeholder="Bild">
+            <input type="text" placeholder="Link">
+            <button onclick="addItemToList('serien')">Element hinzufügen</button>
+        </div>
+    </div>
+
+    <script>
+        function addItemToList(listId) 
+        {
+            var textInput = document.getElementById("item-text").value;
+            var imageInput = document.getElementById("item-image").value;
+        
+            if (textInput && imageInput) 
+            {
+                var list = document.getElementById(listId + "-items");
+                var listItem = document.createElement("li");
+                listItem.innerHTML = '<img src="' + imageInput + '" alt="' + textInput + '"><span>' + textInput + '</span>';
+                list.appendChild(listItem);
+                // Zurücksetzen der Eingabefelder nach dem Hinzufügen
+                document.getElementById("item-text").value = "";
+                document.getElementById("item-image").value = "";
+            } 
+            else
+            {
+                alert("Bitte Text und Bild-URL eingeben.");
+            }
+        }
+        function showSection(sectionId) 
+        {
+            // Alle Abschnitte ausblenden
+            var containers = document.querySelectorAll('.container');
+            containers.forEach(function(container) 
+            {
+                container.style.display = 'none';
+            });
+
+            // Den gewählten Abschnitt anzeigen
+            var section = document.getElementById(sectionId);
+            if (section) 
+            {
+                section.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
