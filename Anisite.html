@@ -16,49 +16,107 @@
             display: block;
         }
     </style>
+    <script>
+        // Funktion zum Laden der gespeicherten Daten beim Seitenladen
+        window.onload = function() 
+        {
+            // Überprüfen, ob gespeicherte Daten vorhanden sind
+            if(localStorage.getItem('listData')) 
+            {
+                // Gespeicherte Daten laden und in die Liste einfügen
+                document.querySelector('#anime ul').innerHTML = localStorage.getItem('listData');
+            }            
+        };
+        window.onload = function()
+        {
+            if(localStorage.getItem('listData')) 
+            {
+                // Gespeicherte Daten laden und in die Liste einfügen
+                document.querySelector('#manga ul').innerHTML = localStorage.getItem('listData');
+            }
+        };
+        window.onload = function()
+        {
+            if(localStorage.getItem('listData')) 
+            {
+                // Gespeicherte Daten laden und in die Liste einfügen
+                document.querySelector('#filme ul').innerHTML = localStorage.getItem('listData');
+            }
+        };      
+            
+
+
+        function addItemToList(category) {
+            // Eingabewerte erfassen
+            var title = document.querySelector('#' + category + ' input[placeholder="Titel"]').value;
+            var image = document.querySelector('#' + category + ' input[placeholder="Bild"]').value;
+            var link = document.querySelector('#' + category + ' input[placeholder="Link"]').value;
+            
+            // Neue Listenelemente erstellen
+            var newItem = document.createElement('li');
+            var img = document.createElement('img');
+            img.src = image;
+            img.alt = title;
+            var span = document.createElement('span');
+            span.textContent = title;
+            newItem.appendChild(img);
+            newItem.appendChild(span);
+            
+            // Listenelement zur Liste hinzufügen
+            document.querySelector('#' + category + ' ul').appendChild(newItem);
+
+            // Gespeicherte Daten aktualisieren
+            localStorage.setItem('listData', document.querySelector('#anime ul').innerHTML);
+            
+            // Eingabefelder leeren
+            document.querySelector('#' + category + ' input[placeholder="Titel"]').value = '';
+            document.querySelector('#' + category + ' input[placeholder="Bild"]').value = '';
+            document.querySelector('#' + category + ' input[placeholder="Link"]').value = '';
+        }
+    </script>
 </head>
 <body>
-    <a href="#anime">Anime anzeigen</a>
-    <a href="#manga">Manga anzeigen</a>
-    <a href="#serien">Serien anzeigen</a>
+    <a href="#anime">Anime</a>
+    <a href="#manga">Manga</a>
+    <a href="#filme">Filme</a>
 
     <div id="anime" class="container">
         <div class="list active">
             <h2>Anime</h2>
-            <ul>
-                <li><img src="bild1.jpg" alt="Bild 1"><span>Text 1</span></li>
-            </ul>
             <input type="text" placeholder="Titel">
             <input type="text" placeholder="Bild">
             <input type="text" placeholder="Link">
             <button onclick="addItemToList('anime')">Element hinzufügen</button>
+            <ul>
+            </ul>            
         </div>
     </div>
 
     <div id="manga" class="container">
         <div class="list active">
             <h2>Manga</h2>
-            <ul>
-                <li><img src="bild1.jpg" alt="Bild 1"><span>Text 1</span></li>
-            </ul>
             <input type="text" placeholder="Titel">
             <input type="text" placeholder="Bild">
             <input type="text" placeholder="Link">
             <button onclick="addItemToList('manga')">Element hinzufügen</button>
+            <ul>
+            </ul>            
         </div>
     </div>
 
-    <div id="serien" class="container">
+    <div id="filme" class="container">
         <div class="list active">
-            <h2>Serien</h2>
-            <ul>
-                <li><img src="bild1.jpg" alt="Bild 1"><span>Text 1</span></li>
-            </ul>
+            <h2>Filme</h2>
             <input type="text" placeholder="Titel">
             <input type="text" placeholder="Bild">
             <input type="text" placeholder="Link">
-            <button onclick="addItemToList('serien')">Element hinzufügen</button>
+            <button onclick="addItemToList('filme')">Element hinzufügen</button>
+            <ul>
+            </ul>
+            
         </div>
     </div>
+
+    
 </body>
 </html>
