@@ -3,120 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listen-Website</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Eingaben speichern und auflisten</title>
     <style>
-        .container 
-        {
-            display: none;
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
         }
-
-        .container:target 
-        {
-            display: block;
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .button-container {
+            margin-bottom: 20px;
+        }
+        .button-container button {
+            margin-right: 10px;
         }
     </style>
-    <script>
-        // Funktion zum Laden der gespeicherten Daten beim Seitenladen
-        window.onload = function() 
-        {
-            // Überprüfen, ob gespeicherte Daten vorhanden sind
-            if(localStorage.getItem('listData')) 
-            {
-                // Gespeicherte Daten laden und in die Liste einfügen
-                document.querySelector('#anime ul').innerHTML = localStorage.getItem('listData');
-            }            
-        };
-        window.onload = function()
-        {
-            if(localStorage.getItem('listData')) 
-            {
-                // Gespeicherte Daten laden und in die Liste einfügen
-                document.querySelector('#manga ul').innerHTML = localStorage.getItem('listData');
-            }
-        };
-        window.onload = function()
-        {
-            if(localStorage.getItem('listData')) 
-            {
-                // Gespeicherte Daten laden und in die Liste einfügen
-                document.querySelector('#filme ul').innerHTML = localStorage.getItem('listData');
-            }
-        };      
-            
-
-
-        function addItemToList(category) {
-            // Eingabewerte erfassen
-            var title = document.querySelector('#' + category + ' input[placeholder="Titel"]').value;
-            var image = document.querySelector('#' + category + ' input[placeholder="Bild"]').value;
-            var link = document.querySelector('#' + category + ' input[placeholder="Link"]').value;
-            
-            // Neue Listenelemente erstellen
-            var newItem = document.createElement('li');
-            var img = document.createElement('img');
-            img.src = image;
-            img.alt = title;
-            var span = document.createElement('span');
-            span.textContent = title;
-            newItem.appendChild(img);
-            newItem.appendChild(span);
-            
-            // Listenelement zur Liste hinzufügen
-            document.querySelector('#' + category + ' ul').appendChild(newItem);
-
-            // Gespeicherte Daten aktualisieren
-            localStorage.setItem('listData', document.querySelector('#anime ul').innerHTML);
-            
-            // Eingabefelder leeren
-            document.querySelector('#' + category + ' input[placeholder="Titel"]').value = '';
-            document.querySelector('#' + category + ' input[placeholder="Bild"]').value = '';
-            document.querySelector('#' + category + ' input[placeholder="Link"]').value = '';
-        }
-    </script>
 </head>
 <body>
-    <a href="#anime">Anime</a>
-    <a href="#manga">Manga</a>
-    <a href="#filme">Filme</a>
 
-    <div id="anime" class="container">
-        <div class="list active">
-            <h2>Anime</h2>
-            <input type="text" placeholder="Titel">
-            <input type="text" placeholder="Bild">
-            <input type="text" placeholder="Link">
-            <button onclick="addItemToList('anime')">Element hinzufügen</button>
-            <ul>
-            </ul>            
-        </div>
-    </div>
+<h2>Eingabe speichern und auflisten</h2>
 
-    <div id="manga" class="container">
-        <div class="list active">
-            <h2>Manga</h2>
-            <input type="text" placeholder="Titel">
-            <input type="text" placeholder="Bild">
-            <input type="text" placeholder="Link">
-            <button onclick="addItemToList('manga')">Element hinzufügen</button>
-            <ul>
-            </ul>            
-        </div>
-    </div>
+<div class="button-container">
+    <button onclick="showTable('Anime')">Anime</button>
+    <button onclick="showTable('Manga')">Manga</button>
+    <button onclick="showTable('Filme')">Filme</button>
+</div>
 
-    <div id="filme" class="container">
-        <div class="list active">
-            <h2>Filme</h2>
-            <input type="text" placeholder="Titel">
-            <input type="text" placeholder="Bild">
-            <input type="text" placeholder="Link">
-            <button onclick="addItemToList('filme')">Element hinzufügen</button>
-            <ul>
-            </ul>
-            
-        </div>
-    </div>
+<table id="animeTable" style="display: none;">
+    <caption>Anime</caption>
+    <thead>
+        <tr>
+            <th>Titel</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Hier werden die gespeicherten Anime-Titel eingefügt -->
+    </tbody>
+</table>
 
-    
+<table id="mangaTable" style="display: none;">
+    <caption>Manga</caption>
+    <thead>
+        <tr>
+            <th>Titel</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Hier werden die gespeicherten Manga-Titel eingefügt -->
+    </tbody>
+</table>
+
+<table id="filmeTable" style="display: none;">
+    <caption>Filme</caption>
+    <thead>
+        <tr>
+            <th>Titel</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Hier werden die gespeicherten Film-Titel eingefügt -->
+    </tbody>
+</table>
+
+<form id="inputForm">
+    <label for="title">Titel:</label>
+    <input type="text" id="title" name="title">
+    <button type="submit">Speichern</button>
+</form>
+
+<script>
+    // Funktion zum Hinzufügen einer Zeile in die Tabelle
+    function addRow(tableId, title) {
+        var table = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+        var newRow = table.insertRow(table.rows.length);
+        var cell1 = newRow.insertCell(0);
+        cell1.innerHTML = title;
+    }
+
+    // Funktion zum Laden der gespeicherten Daten
+    function loadSavedData(tableId) {
+        var savedData = JSON.parse(localStorage.getItem(tableId)) || [];
+        savedData.forEach(function(data) {
+            addRow(tableId, data.title);
+        });
+    }
+
+    // Funktion zum Speichern der Daten im localStorage
+    function saveData(tableId, title) {
+        var savedData = JSON.parse(localStorage.getItem(tableId)) || [];
+        savedData.push({title: title});
+        localStorage.setItem(tableId, JSON.stringify(savedData));
+    }
+
+    // Event-Handler für das Formular
+    document.getElementById("inputForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Verhindert das Standardverhalten des Formulars
+
+        // Holen des eingegebenen Titels
+        var title = document.getElementById("title").value;
+
+        // Bestimmung der aktiven Tabelle
+        var activeTableId = document.querySelector('table:not([style="display: none;"])').id;
+
+        // Hinzufügen des Titels zur Tabelle
+        addRow(activeTableId, title);
+
+        // Speichern der Daten
+        saveData(activeTableId, title);
+
+        // Zurücksetzen des Formulars
+        document.getElementById("inputForm").reset();
+    });
+
+    // Funktion zum Anzeigen der ausgewählten Tabelle
+    function showTable(tableId) {
+        var tables = document.getElementsByTagName("table");
+        for (var i = 0; i < tables.length; i++) {
+            tables[i].style.display = "none";
+        }
+        document.getElementById(tableId.toLowerCase() + "Table").style.display = "table";
+    }
+
+    // Standardmäßige Anzeige der ersten Tabelle beim Laden der Seite
+    showTable("Anime");
+
+    // Laden der gespeicherten Daten beim Laden der Seite
+    loadSavedData("animeTable");
+    loadSavedData("mangaTable");
+    loadSavedData("filmeTable");
+</script>
+
 </body>
 </html>
