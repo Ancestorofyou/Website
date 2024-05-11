@@ -3,12 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eingaben speichern und auflisten</title>
+    <title>Our Recommends</title>
     <style>
+        body {
+            background-color: #222; /* Dunkler Hintergrund */
+            color: #fff; /* Weiße Schrift */
+            font-family: Arial, sans-serif; /* Standard-Schriftart */
+            margin: 0; /* Entfernt den Standard-Abstand des Körpers */
+            padding: 0; /* Entfernt den Standard-Padding des Körpers */
+        }
         table {
             border-collapse: collapse;
             width: 100%;
             margin-bottom: 20px;
+            color: #fff; /* Weiße Schrift für Tabellen */
         }
         th, td {
             border: 1px solid #dddddd;
@@ -16,7 +24,7 @@
             padding: 8px;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #333; /* Dunkleres Grau für Tabellenüberschriften */
         }
         .button-container {
             margin-bottom: 20px;
@@ -24,35 +32,64 @@
         .button-container button {
             margin-right: 10px;
         }
+        .delete-cell {
+            cursor: pointer;
+        }
+        /* Anpassung für den Eingabebereich */
+        input[type="text"], button[type="submit"] {
+            background-color: #444; /* Dunklerer Hintergrund für Eingabefeld und Schaltfläche */
+            color: #fff; /* Weiße Schrift für Eingabefeld und Schaltfläche */
+            border: none;
+            padding: 8px;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+        input[type="text"]::placeholder {
+            color: #ccc; /* Grauer Platzhaltertext */
+        }
+        input[type="text"]:focus {
+            outline: none; /* Entfernt den Fokus-Rahmen */
+        }
+        button[type="submit"]:hover {
+            background-color: #666; /* Dunklerer Hintergrund beim Hover-Effekt */
+        }
     </style>
 </head>
 <body>
 
-<h2>Eingabe speichern und auflisten</h2>
+<h2>Watch and Read</h2>
 
 <div class="button-container">
-    <button onclick="showTable('Anime')">Anime</button>
     <button onclick="showTable('Manga')">Manga</button>
+    <button onclick="showTable('Anime')">Anime</button>    
     <button onclick="showTable('Filme')">Filme</button>
 </div>
 
-<table id="animeTable" style="display: none;">
-    <caption>Anime</caption>
-    <thead>
-        <tr>
-            <th>Titel</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Hier werden die gespeicherten Anime-Titel eingefügt -->
-    </tbody>
-</table>
+<div class="button-container">
+    <button onclick="deleteSelectedRows()">Ausgewählte löschen</button>
+</div>
+
+<form id="inputForm"> 
+    <input type="text" id="title" name="title" placeholder="Titel eingeben">
+    <input type="text" id="chapter" name="chapter" placeholder="Chapter Number">
+    <input type="text" id="status" name="status" placeholder="Status">
+    <input type="text" id="url" name="url" placeholder="Link">
+    <input type="text" id="urlcurrent" name="urlcurrent" placeholder="Link Current">
+    <input type="text" id="urlfirst" name="urlfirst" placeholder="Link First">
+    <button type="submit">Speichern</button>
+</form>
 
 <table id="mangaTable" style="display: none;">
-    <caption>Manga</caption>
     <thead>
         <tr>
-            <th>Titel</th>
+            <th>Manga</th>
+            <th>Chapter</th>
+            <th>Status</th>
+            <th>Link</th>
+            <th>Link Current</th>
+            <th>Link First</th>
+            <th></th> <!-- Leere Zelle für Löschsymbol -->
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -60,11 +97,35 @@
     </tbody>
 </table>
 
-<table id="filmeTable" style="display: none;">
-    <caption>Filme</caption>
+<table id="animeTable" style="display: none;">
     <thead>
         <tr>
-            <th>Titel</th>
+            <th>Anime</th>
+            <th>Episode</th>
+            <th>Status</th>
+            <th>Link</th>
+            <th>Link Current</th>
+            <th>Link First</th>
+            <th></th> <!-- Leere Zelle für Löschsymbol -->
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Hier werden die gespeicherten Anime-Titel eingefügt -->
+    </tbody>
+</table>
+
+<table id="filmeTable" style="display: none;">
+    <thead>
+        <tr>
+            <th>Filme</th>
+            <th>Episode</th>
+            <th>Status</th>
+            <th>Link</th>
+            <th>Link Current</th>
+            <th>Link First</th>
+            <th></th> <!-- Leere Zelle für Löschsymbol -->
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -72,72 +133,140 @@
     </tbody>
 </table>
 
-<form id="inputForm">
-    <label for="title">Titel:</label>
-    <input type="text" id="title" name="title">
-    <button type="submit">Speichern</button>
-</form>
-
 <script>
     // Funktion zum Hinzufügen einer Zeile in die Tabelle
-    function addRow(tableId, title) {
+    function addRow(tableId, title, chapter, status, url, urlcurrent, urlfirst) 
+    {
         var table = document.getElementById(tableId).getElementsByTagName('tbody')[0];
         var newRow = table.insertRow(table.rows.length);
-        var cell1 = newRow.insertCell(0);
-        cell1.innerHTML = title;
+        var titleCell = newRow.insertCell(0);
+        titleCell.innerHTML = title;
+        var chapterCell = newRow.insertCell(1); // Spalte für Kapitel
+        chapterCell.innerHTML = chapter;        
+        var statusCell = newRow.insertCell(2); // Spalte für Status
+        statusCell.innerHTML = status;
+        var urlCell = newRow.insertCell(3); // Spalte für Status
+        urlCell.innerHTML = '<a href="' + url + '" target="_blank">Link</a>'; // HTML-Link
+        var urlcurrentCell = newRow.insertCell(4); // Spalte für Status
+        urlcurrentCell.innerHTML = '<a href="' + urlcurrent + '" target="_blank">Link</a>'; // HTML-Link
+        var urlfirstCell = newRow.insertCell(5); // Spalte für Status
+        urlfirstCell.innerHTML = '<a href="' + urlfirst + '" target="_blank">Link</a>'; // HTML-Link
+
+        var deleteCell = newRow.insertCell(6); // Zelle für das Löschsymbol
+        deleteCell.innerHTML = '<span class="delete-cell" onclick="deleteRow(this)">x</span>'; // Löschsymbol
+        var checkboxCell = newRow.insertCell(7); // Zelle für Checkbox
+        checkboxCell.innerHTML = '<input type="checkbox" class="row-checkbox">';
     }
 
     // Funktion zum Laden der gespeicherten Daten
-    function loadSavedData(tableId) {
+    function loadSavedData(tableId) 
+    {
         var savedData = JSON.parse(localStorage.getItem(tableId)) || [];
-        savedData.forEach(function(data) {
-            addRow(tableId, data.title);
+        savedData.forEach(function(data) 
+        {
+            addRow(tableId, data.title, data.chapter, data.status, data.url, data.urlcurrent, data.urlfirst); // Hinzufügen von Kapitel und Status
         });
     }
 
     // Funktion zum Speichern der Daten im localStorage
-    function saveData(tableId, title) {
+    function saveData(tableId, title, chapter, status, url, urlcurrent, urlfirst)
+    {
         var savedData = JSON.parse(localStorage.getItem(tableId)) || [];
-        savedData.push({title: title});
+        savedData.push({title: title, chapter: chapter, status: status, url: url, urlcurrent: urlcurrent, urlfirst: urlfirst}); // Hinzufügen von Kapitel und Status
         localStorage.setItem(tableId, JSON.stringify(savedData));
     }
 
-    // Event-Handler für das Formular
-    document.getElementById("inputForm").addEventListener("submit", function(event) {
-        event.preventDefault(); // Verhindert das Standardverhalten des Formulars
+   // Event-Handler für das Formular
+document.getElementById("inputForm").addEventListener("submit", function(event) 
+{
+    event.preventDefault(); // Verhindert das Standardverhalten des Formulars
 
-        // Holen des eingegebenen Titels
-        var title = document.getElementById("title").value;
+    // Holen der eingegebenen Werte
+    var title = document.getElementById("title").value; //Titel erfassen
+    var chapter = document.getElementById("chapter").value; //Kapitel erfassen
+    var status = document.getElementById("status").value; //Status Erfassen
+    var url = document.getElementById("url").value; // URL erfassen
+    var urlcurrent = document.getElementById("urlcurrent").value; // URLcurrent erfassen
+    var urlfirst = document.getElementById("urlfirst").value; // URLfirst erfassen
 
-        // Bestimmung der aktiven Tabelle
-        var activeTableId = document.querySelector('table:not([style="display: none;"])').id;
+    // Bestimmung der aktiven Tabelle
+    var activeTableId = document.querySelector('table:not([style="display: none;"])').id;
 
-        // Hinzufügen des Titels zur Tabelle
-        addRow(activeTableId, title);
+    // Hinzufügen der Zeile zur Tabelle
+    addRow(activeTableId, title, chapter, status, url, urlcurrent, urlfirst); // URL übergeben
 
-        // Speichern der Daten
-        saveData(activeTableId, title);
+    // Speichern der Daten
+    saveData(activeTableId, title, chapter, status, url, urlcurrent, urlfirst); // URL übergeben
 
-        // Zurücksetzen des Formulars
-        document.getElementById("inputForm").reset();
-    });
+    // Zurücksetzen des Formulars
+    document.getElementById("inputForm").reset();
+});
+
 
     // Funktion zum Anzeigen der ausgewählten Tabelle
-    function showTable(tableId) {
+    function showTable(tableId) 
+    {
         var tables = document.getElementsByTagName("table");
-        for (var i = 0; i < tables.length; i++) {
+        for (var i = 0; i < tables.length; i++) 
+        {
             tables[i].style.display = "none";
         }
         document.getElementById(tableId.toLowerCase() + "Table").style.display = "table";
     }
 
     // Standardmäßige Anzeige der ersten Tabelle beim Laden der Seite
-    showTable("Anime");
+    showTable("Manga");
 
     // Laden der gespeicherten Daten beim Laden der Seite
-    loadSavedData("animeTable");
     loadSavedData("mangaTable");
+    loadSavedData("animeTable");    
     loadSavedData("filmeTable");
+
+    // Funktion zum Löschen einer Zeile
+    function deleteRow(element) 
+    {
+        var row = element.parentNode.parentNode;
+        var table = row.parentNode.parentNode;
+        var title = row.cells[0].innerHTML; // Titel-Zelle ist jetzt die erste Zelle
+        var tableId = table.id;
+        row.parentNode.removeChild(row); // Entfernen der Zeile aus der Tabelle
+        // Aktualisieren der gespeicherten Daten im localStorage
+        var savedData = JSON.parse(localStorage.getItem(tableId)) || [];
+        savedData = savedData.filter(function(data) {
+            return data.title !== title;
+        });
+        localStorage.setItem(tableId, JSON.stringify(savedData));
+    }
+
+    // Funktion zum Löschen aller ausgewählten Zeilen
+    function deleteSelectedRows() 
+    {
+        var tables = document.getElementsByTagName("table");
+        for (var i = 0; i < tables.length; i++) 
+        {
+            var table = tables[i];
+            var checkboxes = table.getElementsByClassName("row-checkbox");
+            var selectedRows = [];
+            for (var j = 0; j < checkboxes.length; j++) 
+            {
+                if (checkboxes[j].checked) 
+                {
+                    selectedRows.push(checkboxes[j].parentNode.parentNode);
+                }
+            }
+            // Löschen der ausgewählten Zeilen aus der Tabelle und dem localStorage
+            selectedRows.forEach(function(row) 
+            {
+                var title = row.cells[0].innerHTML; // Titel-Zelle ist jetzt die erste Zelle
+                var savedData = JSON.parse(localStorage.getItem(table.id)) || [];
+                savedData = savedData.filter(function(data) {
+                    return data.title !== title;
+                });
+                localStorage.setItem(table.id, JSON.stringify(savedData));
+                row.parentNode.removeChild(row);
+            });
+        }
+    }
 </script>
 
 </body>
